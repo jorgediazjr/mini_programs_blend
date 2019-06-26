@@ -180,47 +180,50 @@ def add_parser():
 	args = parser.parse_args()
 	return args
 
-home_path = os.getcwd()
-files = find('CLUSTERS.txt', home_path)
-files.sort()
+def main():
+    home_path = os.getcwd()
+    files = find('CLUSTERS.txt', home_path)
+    files.sort()
 
-length = file_len(files) - 4
+    length = file_len(files) - 4
 
-args = add_parser()
-min = args.minimum
-max = args.maximum
-short = args.short
-tall = args.tall
-dataset = args.dataset
+    args = add_parser()
+    min = args.minimum
+    max = args.maximum
+    short = args.short
+    tall = args.tall
+    dataset = args.dataset
 
-# TODO
-# make sure the file read is processed based on user input
-# add functionality for the heights
+    # TODO
+    # make sure the file read is processed based on user input
+    # add functionality for the heights
 
-headers = read_header(files)
+    headers = read_header(files)
 
-if dataset:
-	good_clusters, datasets, cluster_height, base = read_clusters_file(files, min, max, dataset)
-	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
-	write_good_clusters_to_file(headers, good_clusters)
-	write_cluster_heights_to_file(base, cluster_height)
-elif short and tall:
-	good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
-	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
-	write_good_clusters_to_file(headers, good_clusters)
-	write_cluster_heights_to_file(base, cluster_height)
-elif short and not tall:
-	tall = length
-	good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
-	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
-	write_good_clusters_to_file(headers, good_clusters)
-	write_cluster_heights_to_file(base, cluster_height)
-elif not short and tall:
-	short = 0
-	good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
-	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
-	write_good_clusters_to_file(headers, good_clusters)
-	write_cluster_heights_to_file(base, cluster_height)
-elif not short and not tall:
-	print("Need positional arguments. For more help do: good_clusters -h")
+    if dataset:
+            good_clusters, datasets, cluster_height, base = read_clusters_file(files, min, max, dataset)
+            cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+            write_good_clusters_to_file(headers, good_clusters)
+            write_cluster_heights_to_file(base, cluster_height)
+    elif short and tall:
+            good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
+            cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+            write_good_clusters_to_file(headers, good_clusters)
+            write_cluster_heights_to_file(base, cluster_height)
+    elif short and not tall:
+            tall = length
+            good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
+            cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+            write_good_clusters_to_file(headers, good_clusters)
+            write_cluster_heights_to_file(base, cluster_height)
+    elif not short and tall:
+            short = 0
+            good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
+            cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+            write_good_clusters_to_file(headers, good_clusters)
+            write_cluster_heights_to_file(base, cluster_height)
+    elif not short and not tall:
+            print("Need positional arguments. For more help do: good_clusters -h")
 
+if __name__ == '__main__':
+    main()
