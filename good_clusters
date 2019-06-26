@@ -1,0 +1,226 @@
+#!/usr/bin/python
+
+'''
+Author: J Diaz
+
+This program is meant to go through the CLUSTERS.txt
+file that is produced from running blend -a mtz_names.dat
+
+This program will check for clusters that have between LOW &
+HIGH datasets within them and extract it's information into a
+dict of lists or list and save it to a new file,
+CLUSTERS_PROMISING.txt
+
+June 21, 2019
+'''
+
+import os, fnmatch, collections, argparse
+
+
+def find(pattern, path):
+    '''
+    this function finds the locations
+    of the files with the specified
+    pattern
+
+    Parameters
+    ----------
+    pattern: str
+        the pattern for the filename
+    path: str
+        the home or root path of use
+
+    Returns
+    -------
+    list
+	list of paths to CLUSTERS.txt
+    '''
+    file = []
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+             	file.append(os.path.join(root, name))
+    return file
+
+
+def file_len(path):
+	files_len = {}
+	if len(path) == 1:
+		with open(path[0], 'r') as f:
+			for i, l in enumerate(f):
+				pass
+		return i+1
+	else:
+		for file in path:
+			with open(file, 'r') as f:
+				for i, l in enumerate(f):
+					pass
+			files_len[file] = i+1
+		return files_len
+
+
+def read_header(files):
+    '''
+    this function just reads the
+    header for CLUSTERS.txt
+
+    Returns
+    -------
+    list
+        list with all the header info 
+    '''
+    headers = []
+    for file in files:
+		f = open(file, 'r').readlines()
+        	headers.append(f[0])
+		headers.append(f[1])
+		headers.append(f[2])
+		break
+    return headers
+
+
+def read_clusters_file(files, min, max, dataset=False):
+    '''
+    This is the main function of this program.
+    We extract the lines in the CLUSTERS.txt
+    where the number of datasets is greater than
+    or equal to 5 and save that to a dictionary.
+
+    We also save a dictionary, where the KEY is
+    the base_path and the VALUE is a dictionary
+    of cluster number with datasets that compose
+    that cluster
+    '''
+    # this dictionary will store base_path as KEY 
+    # and the line that meets the condition as VALUE
+    good_clusters = {}
+
+    # this dictionary will store the cluster number as KEY 
+    # and the datasets that compose that cluster # as VALUE
+    cluster_datasets = {}
+
+    # this dictionary will store the base_path as KEY
+    # and the cluster_datasets as the VALUE
+    datasets = {}
+
+    cluster_height = {}
+    cl_ht = {}
+
+    temp_line = []
+    num_of_clusters = 0
+    temp_height = []
+
+    base_file = ""
+    for file in files:
+		base = '_'.join(file.split('/')[-1:])
+        	with open(file, 'r') as f:
+			lines = f.readlines()
+			for line in lines:
+				t_line = " ".join(line.split())
+				if len(t_line) == 0:
+					continue
+				else:
+					try:
+						if type(int(t_line.split()[0])) == type(0):
+							if dataset:
+								num_of_datasets = int(t_line.split()[1])
+								if num_of_datasets >= min and num_of_datasets <= max:
+									cluster_datasets[int(float(t_line.split()[0]+'.'))] = list(map(int, t_line.split()[7:]))
+									cl_ht[int(float(t_line.split()[0]+'.'))] = float(t_line.split()[2])
+									temp_line.append(line)
+							else:
+								height_of_cluster = float(t_line.split()[2])
+								if height_of_cluster >= min and height_of_cluster <= max:
+									cluster_datasets[int(float(t_line.split()[0]+'.'))] = list(map(int, t_line.split()[7:]))
+									cl_ht[int(float(t_line.split()[0]+'.'))] = float(t_line.split()[2])
+									temp_line.append(line)
+					except ValueError:
+						pass
+        	good_clusters[base] = temp_line
+		datasets[base] = cluster_datasets
+                cluster_height[base] = cl_ht
+	        cl_ht = {}
+		cluster_datasets = {}
+        	temp_line = []
+		base_file = base
+    return good_clusters, datasets, cluster_height, base_file
+
+
+def write_good_clusters_to_file(headers, good_clusters):
+    with open('CLUSTERS_PROMISING.txt', 'w') as file:
+        for header in headers:
+            file.write(header)
+        file.write('\n')
+	for location in good_clusters:
+	    for line in good_clusters[location]:
+                file.write(line + '\n')	
+	    file.write('\n')
+
+
+def write_cluster_heights_to_file(base, cluster_height):
+	with open("CLUSTERS_HEIGHTS_PROMISING.txt", 'w') as file:
+	    file.write("# {}\n".format(base))
+            file.write("# {:9s} {:7s}\n".format("Cluster", "Height"))
+	    for cluster_number in cluster_height:
+	        file.write("{:10s} {:6.3f}\n".format(str(cluster_number), cluster_height[cluster_number]))
+            file.write("\n")
+
+def add_parser():
+	parser = argparse.ArgumentParser(description="The file CLUSTERS.txt which is produced from running blend -a, is the file necessary for this program to execute correctly. This program accepts short and tall height of cluster, or it accepts minimum and maximum number of datasets per cluster, for extraction of promising clusters.")
+	parser.add_argument("-m", "--minimum", help="enter the minimum number of datasets you want per cluster, e.g: good_clusters -m 3 will result in all clusters with a minimum of 3 datasets",
+			    type=int)
+	parser.add_argument("-x", "--maximum", help="enter the maximum number of datasets you want per cluster, e.g: good_clusters -x 7 will result in all clusters with a maximum of 7 datasets",
+			    type=int)
+	parser.add_argument("-s", "--short", help="enter short height to use with blend synthesis",
+			    type=float)
+	parser.add_argument("-t", "--tall", help="enter tall height to use with blend synthesis",
+			    type=float)
+	parser.add_argument("-d", "--dataset", help="If this is entered then minimum and maximum are used",
+			    action="store_true")
+	args = parser.parse_args()
+	return args
+
+home_path = os.getcwd()
+files = find('CLUSTERS.txt', home_path)
+files.sort()
+
+length = file_len(files) - 4
+
+args = add_parser()
+min = args.minimum
+max = args.maximum
+short = args.short
+tall = args.tall
+dataset = args.dataset
+
+# TODO
+# make sure the file read is processed based on user input
+# add functionality for the heights
+
+headers = read_header(files)
+
+if dataset:
+	good_clusters, datasets, cluster_height, base = read_clusters_file(files, min, max, dataset)
+	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+	write_good_clusters_to_file(headers, good_clusters)
+	write_cluster_heights_to_file(base, cluster_height)
+elif short and tall:
+	good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
+	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+	write_good_clusters_to_file(headers, good_clusters)
+	write_cluster_heights_to_file(base, cluster_height)
+elif short and not tall:
+	tall = length
+	good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
+	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+	write_good_clusters_to_file(headers, good_clusters)
+	write_cluster_heights_to_file(base, cluster_height)
+elif not short and tall:
+	short = 0
+	good_clusters, datasets, cluster_height, base = read_clusters_file(files, short, tall)
+	cluster_height = collections.OrderedDict(sorted(cluster_height[base].items()))
+	write_good_clusters_to_file(headers, good_clusters)
+	write_cluster_heights_to_file(base, cluster_height)
+elif not short and not tall:
+	print("Need positional arguments. For more help do: good_clusters -h")
+

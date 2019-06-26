@@ -1,0 +1,35 @@
+#!/bin/bash
+
+file=$1
+
+declare -a heights
+count="$(wc -l < $1)" 
+echo $count
+num=0
+while IFS= read -r line
+do
+	word=$(echo $line | awk '{print $1;}')
+	if [[ $word == "#" ]]
+	then
+		continue
+	fi
+        if [[ $num -lt $count ]]
+	then
+		ht=$(echo $line | awk '{print $2;}')
+		heights+=($ht)
+	fi	
+done < $file
+
+rm "synthesis_output.txt"
+rm -rf all_merged_files
+mkdir all_merged_files
+
+for height in "${heights[@]}"
+do
+	echo $height
+	short=$(awk "BEGIN {print $height-0.001}")
+	tall=$(awk "BEGIN {print $height+0.001}")
+	echo "blend -s $height $short"
+	blend -s $tall $short |& tee -a "synthesis_output.txt"
+	cp ./merged_files/MERGING_STATISTICS.info ./all_merged_files/MERGING_STATISTICS_$height.info
+done
