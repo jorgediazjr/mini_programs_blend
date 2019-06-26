@@ -48,16 +48,16 @@ def add_parser():
 
 def file_len(path):
 	with open(path, 'r') as f:
-		for i, l in enumerate(f):
-			pass
+        for i, l in enumerate(f):
+            pass
 	return i+1
 
 
 def find_file(path, pattern):
 	for root, dirs, files in os.walk(path):
-		for name in files:
-			if fnmatch.fnmatch(name, pattern):
-				return os.path.join(root, name)
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+                return os.path.join(root, name)
 
 
 def process_minimum_and_maximum(blend_path, cluster_path, length, minimum=None, maximum=None):
