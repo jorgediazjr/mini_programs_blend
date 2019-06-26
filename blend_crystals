@@ -48,16 +48,16 @@ def add_parser():
 
 def file_len(path):
 	with open(path, 'r') as f:
-        for i, l in enumerate(f):
-            pass
+		for i, l in enumerate(f):
+		    pass
 	return i+1
 
 
 def find_file(path, pattern):
 	for root, dirs, files in os.walk(path):
-        for name in files:
-            if fnmatch.fnmatch(name, pattern):
-                return os.path.join(root, name)
+		for name in files:
+		    if fnmatch.fnmatch(name, pattern):
+			return os.path.join(root, name)
 
 
 def process_minimum_and_maximum(blend_path, cluster_path, length, minimum=None, maximum=None):
@@ -180,14 +180,13 @@ def write_cluster_crystal_info_file(cluster_crystal, merging_path=None):
 					completeness = float(value.split()[7])
 					redundancy = float(value.split()[8])
 					print("Completeness = {} | Redundancy = {}".format(completness, redundancy))
-					file.write("{:79s} {:7.3f} {:7.3f}".format(cluster, completeness, redundancy))
-				else:
-					completeness = value.split()[7]
-					redundancy = value.split()[8]
-					print("Completeness = {} | Redundancy = {}".format(completness, redundancy))
-					file.write("{:79s} {:15s} {:15s}".format(cluster, completeness, redundancy))
+					file.write("{:89s} {:7.3f} {:7.3f}\n".format(str(cluster), completeness, redundancy))
 			except:
-				pass
+				print("Made it")
+				completeness = value.split()[7]
+				redundancy = value.split()[8]
+				print("Completeness = {} | Redundancy = {}".format(completeness, redundancy))
+				file.write("{:89s} {:15s} {:15s}\n".format(str(cluster), completeness, redundancy))
 			for crystal in cluster_crystal[cluster]:
 				spacegroup = cluster_crystal[cluster][crystal].split()[0]
 				cell = list(map(float, cluster_crystal[cluster][crystal].split()[1:7]))
