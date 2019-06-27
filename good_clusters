@@ -49,13 +49,14 @@ def file_len(path):
 		with open(path[0], 'r') as f:
 			for i, l in enumerate(f):
 				pass
-		return i+1
+		files_len[path] = (i+1)-4
+		return files_len
 	else:
 		for file in path:
 			with open(file, 'r') as f:
 				for i, l in enumerate(f):
 					pass
-			files_len[file] = i+1
+			files_len[file] = (i+1)-4
 		return files_len
 
 
@@ -185,7 +186,7 @@ def main():
     files = find('CLUSTERS.txt', home_path)
     files.sort()
 
-    length = file_len(files) - 4
+    length = file_len(files)
 
     args = add_parser()
     min = args.minimum
