@@ -1,4 +1,12 @@
 #!/bin/bash
+# program is for executing blend -s
+# on the file CLUSTERS_HEIGHTS_PROMISING.txt
+# which is produced from running good_clusters
+#
+# the file has to commented lines
+# and the rest of the lines have
+# cluster in column 1 &
+# height of cluster in column 2
 
 file=$1
 
@@ -30,6 +38,6 @@ do
 	short=$(awk "BEGIN {print $height-0.001}")
 	tall=$(awk "BEGIN {print $height+0.001}")
 	echo "blend -s $height $short"
-	blend -s $tall $short |& tee -a "synthesis_output.txt"
+	(blend -s $tall $short < /dev/null ) |& tee -a "synthesis_output.txt"
 	cp ./merged_files/MERGING_STATISTICS.info ./all_merged_files/MERGING_STATISTICS_$height.info
 done
