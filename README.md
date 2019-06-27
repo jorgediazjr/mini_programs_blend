@@ -1,6 +1,6 @@
-### Mini Programs that help in the analysis of files produced from running "blend -a" and "blend -s"
+## Mini Programs that help in the analysis of files produced from running "blend -a" and "blend -s"
 ---------------------------------------------------------------------------------------------------
 
 
-#### good_crystal program
+### good_crystal program
 
