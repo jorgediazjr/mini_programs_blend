@@ -10,4 +10,4 @@ These additionals programs will only work if you have atleast executed blend in 
 
 FILES NEEDED:
 1. CLUSTERS.txt
-	- file is produced after executing the following: blend -a original.dat 
+	- file is produced after executing the following:`blend -a original.dat` 
