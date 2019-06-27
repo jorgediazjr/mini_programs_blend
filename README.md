@@ -1,12 +1,12 @@
-## Mini Programs Blend
+# Mini Programs Blend
 
-### These mini programs help in the analysis of files produced from running "blend -a" and/or "blend -s"
+## These mini programs help in the analysis of files produced from running "blend -a" and/or "blend -s"
 
 These additionals programs will only work if you have atleast executed blend in analysis mode.
 
-### good_crystal program
+## good_crystal program
 
-#### How does good_crystal work?
+### How does good_crystal work?
 
 FILES NEEDED:
 1. CLUSTERS.txt
