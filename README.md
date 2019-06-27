@@ -4,9 +4,9 @@ These mini programs help in the analysis of files produced from running "blend -
 
 These additionals programs will only work if you have atleast executed blend in analysis mode.
 
-## good_crystal program
+## good_clusters program
 
-### How does good_crystal work?
+### How does good_clusters work?
 
 FILES NEEDED:
 1. CLUSTERS.txt
