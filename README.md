@@ -103,4 +103,4 @@ optional arguments:
 FILES PRODUCED:
 1. CLUSTER_CRYSTAL.info
 	- this file contains the cluster(s) with all the crystals
-	that make up the cluster(s) and cell information(as mentioned before)
+	that make up the cluster(s) and cell information (as mentioned before)
