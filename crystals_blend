@@ -182,6 +182,7 @@ def process_clusters(blend_paths, clusters, lengths):
 		clusters_txt_file = os.path.dirname(cluster_path) + '/CLUSTERS.txt'
 		list_of_clusters = clusters[cluster_path]
 		print(list_of_clusters)
+		print(clusters_txt_file)
 		with open(clusters_txt_file, 'r') as file:
 			for line in file:
 				try:
@@ -190,6 +191,7 @@ def process_clusters(blend_paths, clusters, lengths):
 						if cluster in list_of_clusters:
 							print("MADE IT WITH CLUSTER = {}".format(cluster))
 							cluster_data_ids[cluster] = list(map(int, line.split()[7:]))
+							print(cluster_data_ids)
 				except:
 					pass
 		cluster_path_data_ids[cluster_path] = cluster_data_ids
@@ -394,6 +396,8 @@ def extract_crystal_information(blend_paths, cluster_path_data_ids, merging_path
 			where 1 is the cluster, 7 is the data id or crystal, and the string contains all the
 			values including completeness and redundancy
 	'''
+	print("Inside function {}".format(cluster_path_data_ids))
+
 	crystal_info = {}
 	cluster_crystal = {}
 	cluster_path_crystal = {}
@@ -415,7 +419,10 @@ def extract_crystal_information(blend_paths, cluster_path_data_ids, merging_path
 									merging_path = os.path.dirname(cluster_path) + '/merged_files/MERGING_STATISTICS.info'
 									completeness, redundancy = extract_merging_statistics_info(cluster, merging_path)
 									temp_line = line.split()
-									spacegroup = lattice_to_spacegroup(current_lattice)
+									try:
+										spacegroup = lattice_to_spacegroup(current_lattice)
+									except:
+										spacegroup = current_lattice
 									crystal_info[crystal] = '{} {} {} {} {} {} {} {} {}'.format(spacegroup, temp_line[2], temp_line[3], temp_line[4], temp_line[5], temp_line[6], temp_line[7], completeness, redundancy)
 						except:
 							pass
@@ -457,8 +464,9 @@ def write_cluster_crystal_info_file(cluster_path_crystal, merging_path=None):
 			for cluster in cluster_path_crystal[cluster_path]:
 				main_info_written = False
 				for crystal in cluster_path_crystal[cluster_path][cluster]:
-												# _ , value = cluster_crystal[cluster].items()[0]
+					print(cluster_path_crystal[cluster_path][338])
 					value = cluster_path_crystal[cluster_path][cluster][crystal]
+					print("{} {} {}".format(cluster, crystal, value))
 					try:
 						if not main_info_written:
 							if type(float(value.split()[7])) == type(0.0):
@@ -524,6 +532,7 @@ def main():
 			clusters = {}
 			clusters[cluster_path] = args.clusters
 			cluster_path_data_ids = process_clusters(blend_paths, clusters, lengths)
+			print("Before invocation {}".format(cluster_path_data_ids))
 			cluster_path_crystal = extract_crystal_information(blend_paths, cluster_path_data_ids, merging_paths)
 			write_cluster_crystal_info_file(cluster_path_crystal, merging_paths)
 	elif args.minimum and args.maximum:
