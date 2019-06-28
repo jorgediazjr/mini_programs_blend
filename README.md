@@ -6,6 +6,10 @@ These additionals programs will only work if you have atleast executed blend in 
 
 ## good_clusters program
 
+Sometimes, a long list of data makes it hard for the user to quickly analyze results.
+This program's purpose is meant to facilitate the extraction and analysis of certain
+range of clusters or heights of clusters.
+
 ### How does good_clusters work?
 
 FILES NEEDED:
