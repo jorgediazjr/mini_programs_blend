@@ -1,6 +1,6 @@
 #!/bin/bash
 # program is for executing blend -s
-# on the file CLUSTERS_HEIGHTS_PROMISING.txt
+# on the file PROMISING_CLUSTERS_HEIGHTS.txt
 # which is produced from running good_clusters
 #
 # the file has to commented lines
@@ -9,6 +9,17 @@
 # height of cluster in column 2
 
 file=$1
+echo $file
+
+if [[ $file == /* ]]
+then
+	n_file="$HOME$file"
+elif [[ $file == .* ]]
+then
+	tmp=${$file#?}
+	echo $tmp
+	n_file="$HOME$temp"
+fi
 
 declare -a heights
 count="$(wc -l < $1)" 
