@@ -37,3 +37,12 @@ optional arguments:
   -t TALL, --tall TALL  enter tall height to use with blend synthesis
   -d, --dataset         If this is entered then minimum and maximum are used
 ```
+
+FILES PRODUCED:
+1. PROMISING_CLUSTERS.txt
+	- list of all clusters that are either between a minimum and maximum number of datasets
+          OR, list of all clusters that are between a short cluster height or tall cluster height
+
+2. PROMISING_CLUSTERS_HEIGHTS.txt
+        - this file has two columns, column 1 contains all the clusters that were extracted and
+	  found in PROMISING_CLUSTERS.txt. Column 2 contains the heights of each associated cluster
