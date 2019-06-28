@@ -53,3 +53,54 @@ FILES PRODUCED:
 2. PROMISING_CLUSTERS_HEIGHTS.txt
 	- this file has two columns, column 1 contains all the clusters that were extracted and
 	found in PROMISING_CLUSTERS.txt. Column 2 contains the heights of each associated cluster
+
+## crystals_blend program
+
+This program helps extract information of the cells that make up each cluster.
+
+Cell information: crystal number, spacegroup number, a, b, c, alpha, beta, gamma, completeness, redundancy
+
+### How does crystals_blend work?
+
+1. FILES NEEDED:
+	- BLEND_SUMMARY.txt
+		- this is file that contains the crystal numbers with the cell information
+		- each crystal represents results from each data set processed
+		- clusters are made up of 2 or more crystals 
+	- CLUSTERS.txt
+		- this is the file that contains the clusters with the crystals that make up each of the clusters
+
+PROGRAM OPTIONS:
+```
+usage: crystals_blend [-h] [-r] [-c CLUSTERS [CLUSTERS ...]] [-m MINIMUM]
+                      [-x MAXIMUM]
+
+This program has a few functionalites based on user taste. If you desire to
+run this program, you must have at least the following files:
+BLEND_SUMMARY.txt, CLUSTERS.txt, which are produced after running blend -a on
+a dataset. MERGING_STATISTICS.info is an optional file, but if it exists, it
+will be useful. This program extracts the information on the clusters and
+dataset ids from CLUSTERS.txt. Afterwards, this program looks in
+BLEND_SUMMARY.txt to extract information on crystal: a, b, c, alpha, beta,
+gamma. If MERGING_STATISTICS.info exists, then it will also be able to find
+the completeness and redundancy of the cluster. NOTE: If the --read option is
+used, you must use the good_clusters program beforehand, in order to produce
+the PROMISING_CLUSTERS.txt file, otherwise it will not work.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r, --read            if this option is selected, then program looks for
+                        PROMISING_CLUSTERS.txt which is produced from
+                        good_clusters program
+  -c CLUSTERS [CLUSTERS ...], --clusters CLUSTERS [CLUSTERS ...]
+                        enter the cluster(s) you want information on
+  -m MINIMUM, --minimum MINIMUM
+                        enter lowest number for range of clusters
+  -x MAXIMUM, --maximum MAXIMUM
+                        enter highest number for range of clusters
+```
+
+FILES PRODUCED:
+1. CLUSTER_CRYSTAL.info
+	- this file contains the cluster with all the crystals
+	that make up with and cell information as mentioned before

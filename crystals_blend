@@ -47,14 +47,14 @@ def lattice_to_spacegroup(lattice):
 
 def add_parser():
 	parser = argparse.ArgumentParser(description="This program has a few functionalites based on user taste.\nIf you desire to run this program, you must have at least the following files: BLEND_SUMMARY.txt, CLUSTERS.txt, which are produced after running blend -a on a dataset.\nMERGING_STATISTICS.info is an optional file, but if it exists, it will be useful.\nThis program extracts the information on the clusters and dataset ids from CLUSTERS.txt.\nAfterwards, this program looks in BLEND_SUMMARY.txt to extract information on crystal: a, b, c, alpha, beta, gamma.\nIf MERGING_STATISTICS.info exists, then it will also be able to find the completeness and redundancy of the cluster.\n\nNOTE: If the --read option is used, you must use the good_clusters program beforehand, in order to produce the PROMISING_CLUSTERS.txt file, otherwise it will not work.")
+	parser.add_argument("-r", "--read", help="if this option is selected, then program looks for PROMISING_CLUSTERS.txt which is produced from good_clusters program",
+			    action="store_true")
 	parser.add_argument("-c", "--clusters", help="enter the cluster(s) you want information on",
 			    type=int, nargs='+')
 	parser.add_argument("-m", "--minimum", help="enter lowest number for range of clusters",
 			    type=int)
 	parser.add_argument("-x", "--maximum", help="enter highest number for range of clusters",
 			    type=int)
-	parser.add_argument("-r", "--read", help="if this option is selected, then program looks for PROMISING_CLUSTERS.txt",
-			    action="store_true")
 	args = parser.parse_args()
 	return args
 
