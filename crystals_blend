@@ -47,14 +47,15 @@ def lattice_to_spacegroup(lattice):
 
 def add_parser():
 	parser = argparse.ArgumentParser(description="This program has a few functionalites based on user taste.\nIf you desire to run this program, you must have at least the following files: BLEND_SUMMARY.txt, CLUSTERS.txt, which are produced after running blend -a on a dataset.\nMERGING_STATISTICS.info is an optional file, but if it exists, it will be useful.\nThis program extracts the information on the clusters and dataset ids from CLUSTERS.txt.\nAfterwards, this program looks in BLEND_SUMMARY.txt to extract information on crystal: a, b, c, alpha, beta, gamma.\nIf MERGING_STATISTICS.info exists, then it will also be able to find the completeness and redundancy of the cluster.\n\nNOTE: If the --read option is used, you must use the good_clusters program beforehand, in order to produce the PROMISING_CLUSTERS.txt file, otherwise it will not work.")
-	parser.add_argument("-r", "--read", help="if this option is selected, then program looks for PROMISING_CLUSTERS.txt which is produced from good_clusters program",
-			    action="store_true")
+	parser.add_argument("-r", "--read", 
+						help="if this option is selected, then program looks for PROMISING_CLUSTERS.txt which is produced from good_clusters program",
+						action="store_true")
 	parser.add_argument("-c", "--clusters", help="enter the cluster(s) you want information on",
-			    type=int, nargs='+')
+			    		type=int, nargs='+')
 	parser.add_argument("-m", "--minimum", help="enter lowest number for range of clusters",
-			    type=int)
+			    		type=int)
 	parser.add_argument("-x", "--maximum", help="enter highest number for range of clusters",
-			    type=int)
+			    		type=int)
 	args = parser.parse_args()
 	return args
 
@@ -128,7 +129,6 @@ def get_good_clusters(promising_clusters_paths):
 	good_clusters = {}
 	temp_clusters = []
 	for path in promising_clusters_paths:
-		print(path)
 		try:
 			with open(path) as file:
 				for line in file:
@@ -170,7 +170,6 @@ def process_clusters(blend_paths, clusters, lengths):
 		and VALUE = list of data ids (crystals)
 	'''
 	for path in clusters:
-		print("PATH={}".format(path))
 		for cluster in clusters[path]:
 			if cluster <= 0 or cluster > lengths[os.path.dirname(path) + '/CLUSTERS.txt']:
 				print("You entered a cluster number {}, that is not allowed. Deleting {} and continuing.".format(cluster, cluster))
@@ -181,8 +180,6 @@ def process_clusters(blend_paths, clusters, lengths):
 	for cluster_path in clusters:
 		clusters_txt_file = os.path.dirname(cluster_path) + '/CLUSTERS.txt'
 		list_of_clusters = clusters[cluster_path]
-		print(list_of_clusters)
-		print(clusters_txt_file)
 		with open(clusters_txt_file, 'r') as file:
 			for line in file:
 				try:
@@ -532,11 +529,9 @@ def main():
 			clusters = {}
 			clusters[cluster_path] = args.clusters
 			cluster_path_data_ids = process_clusters(blend_paths, clusters, lengths)
-			print("Before invocation {}".format(cluster_path_data_ids))
 			cluster_path_crystal = extract_crystal_information(blend_paths, cluster_path_data_ids, merging_paths)
 			write_cluster_crystal_info_file(cluster_path_crystal, merging_paths)
 	elif args.minimum and args.maximum:
-		print('MADE IT BRO')
 		if args.minimum == 0:
 			minimum = 1
 		else:
@@ -546,13 +541,11 @@ def main():
 		cluster_path_crystal = extract_crystal_information(blend_paths, cluster_path_data_ids, merging_paths)
 		write_cluster_crystal_info_file(cluster_path_crystal, merging_paths)
 	elif args.minimum and not args.maximum:
-		print("MADE IT BRUH")
 		minimum = args.minimum
 		cluster_path_data_ids = process_minimum_or_maximum(blend_paths, cluster_paths, lengths, minimum, maximum)
 		cluster_path_crystal = extract_crystal_information(blend_paths, cluster_path_data_ids, merging_paths)
 		write_cluster_crystal_info_file(cluster_path_crystal, merging_paths)
 	elif not args.minimum and args.maximum:
-		print("MADE IT BRAH")
 		maximum = args.maximum
 		cluster_path_data_ids = process_minimum_or_maximum(blend_paths, cluster_paths, lengths, minimum, maximum)
 		cluster_path_crystal = extract_crystal_information(blend_paths, cluster_path_data_ids, merging_paths)
