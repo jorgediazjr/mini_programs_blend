@@ -239,10 +239,6 @@ def main():
     tallest_heights = get_tallest_heights(lengths)
     print(tallest_heights)
 
-    # TODO
-    # make sure the file read is processed based on user input
-    # add functionality for the heights
-
     header = read_header(cluster_files)
 
     if dataset:
