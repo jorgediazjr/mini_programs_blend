@@ -1,6 +1,7 @@
 # Mini Programs Blend
 
-These mini programs help in the analysis of files produced from running "blend -a" and/or "blend -s"
+These mini programs help in the analysis of files produced from running `blend -a original.dat`
+and/or `blend -s tallest_height [smallest_height]`
 
 These additionals programs will only work if you have atleast executed blend in analysis mode.
 
