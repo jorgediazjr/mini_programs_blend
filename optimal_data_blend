@@ -64,9 +64,9 @@ def get_optimal_data_paths(final_list_paths, cluster_path_data_ids):
 def write_new_final_list_to_file(cluster_final_paths):
 	for optimal_path in cluster_final_paths:
 		now = datetime.now()
-		current_time = now.strftime("%H:%M:%S")
+		current_time = now.strftime("%H_%M_%S")
 		root_path = os.path.dirname(optimal_path) 
-		final_directory = root_path + '/new_final_list_' + current_time.replace(':','_')
+		final_directory = root_path + '/new_final_list_' + current_time
 		if not os.path.exists(final_directory):
 			os.mkdir(final_directory)
 			os.chdir(final_directory)
