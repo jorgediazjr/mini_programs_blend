@@ -5,101 +5,160 @@ import os, argparse, fnmatch
 from datetime import datetime
 
 def find_files(path, pattern):
-	f = []
-	for root, dirs, files in os.walk(path):
-		for name in files:
-			if fnmatch.fnmatch(name, pattern):
-				f.append(os.path.join(root, name))
-	return f
+    '''
+    This function finds all the files
+    with the specified pattern
+
+    Parameters
+    ----------
+    path: str
+        root path where to search for file
+
+    pattern:
+        the file user program will look for
+
+    Returns
+    -------
+    list
+        list of full paths to pattern file
+    '''
+    f = []
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            if fnmatch.fnmatch(name, pattern):
+                f.append(os.path.join(root, name))
+    return f
 
 
 def add_parser():
-	parser = argparse.ArgumentParser("This program finds the path of every crystal in clusters. These clusters can either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding the paths the program write each path to a new file inside a new directory. The user can then run blend analysis mode and analyze the results.")
-	parser.add_argument('-c', '--clusters', help='enter the cluster(s) you want information on',
-			    type=int, nargs='+')
-	args = parser.parse_args()
-	return args
+    parser = argparse.ArgumentParser("This program finds the path of every crystal in clusters. These clusters can either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding the paths the program write each path to a new file inside a new directory. The user can then run blend analysis mode and analyze the results.")
+    parser.add_argument('-c', '--clusters', help='enter the cluster(s) you want information on',
+                        type=int, nargs='+')
+    args = parser.parse_args()
+    return args
 
 
 def get_cluster_information(cluster_paths, clusters=None):
-	cluster_path_data_ids = {}
-	cluster_data_ids = {}
-	for cluster_path in cluster_paths:
-		with open(cluster_path, 'r') as file:
-			for line in file:
-				try:
-					if type(int(float(line.split()[0]+'.'))) == type(0):
-						cluster = int(float(line.split()[0]+'.'))
-						if clusters:
-							if cluster in clusters:
-								data_ids = list(map(int, line.split()[7:]))
-								cluster_data_ids[cluster] = data_ids
-						else:
-							data_ids = list(map(int, line.split()[7:]))
-							cluster_data_ids[cluster] = data_ids
-				except:
-					pass
-		cluster_path_data_ids[cluster_path] = cluster_data_ids
-		cluster_data_ids = {}
-	return cluster_path_data_ids
+    '''
+    This function get the clusters along with there data ids (crystals)
+
+    Parameters
+    ----------
+    cluster_paths: list
+        list of full paths to CLUSTERS.txt
+
+    cluster: list, optional
+        if this list is true, then user specified the clusters to extract info from
+
+    Returns
+    -------
+    dict:
+        OUTER KEY = path to CLUSTERS.txt
+        INNER KEY = cluster number
+        VALUE = list of data ids (crystals)
+    '''
+    cluster_path_data_ids = {}
+    cluster_data_ids = {}
+    for cluster_path in cluster_paths:
+        with open(cluster_path, 'r') as file:
+            for line in file:
+                try:
+                    if type(int(float(line.split()[0]+'.'))) == type(0):
+                        cluster = int(float(line.split()[0]+'.'))
+                        if clusters:
+                            if cluster in clusters:
+                                data_ids = list(map(int, line.split()[7:]))
+                                cluster_data_ids[cluster] = data_ids
+                        else:
+                            data_ids = list(map(int, line.split()[7:]))
+                            cluster_data_ids[cluster] = data_ids
+                except:
+                    pass
+        cluster_path_data_ids[cluster_path] = cluster_data_ids
+        cluster_data_ids = {}
+    return cluster_path_data_ids
 
 
 def get_optimal_data_paths(final_list_paths, cluster_path_data_ids):
-	list_of_optimal_paths = []
-	cluster_final_path = {}
-	for cluster_path in cluster_path_data_ids:
-		for cluster in cluster_path_data_ids[cluster_path]:
-			final_path = os.path.dirname(cluster_path) + '/FINAL_list_of_files.dat'
-			data_ids = cluster_path_data_ids[cluster_path][cluster]
-			with open(final_path, 'r') as f:
-				for line in f:
-					serial_number = int(line.split()[1])
-					if serial_number in data_ids:
-						list_of_optimal_paths.append(line.split()[0])
-			cluster_final_path[cluster_path] = list_of_optimal_paths
-			list_of_optimal_paths = []
-	return cluster_final_path
+    '''
+    This function gets the paths of all the crystals associated with
+    desired clusters.
+
+    Parameters
+    ----------
+    final_list_paths: list
+        list of full paths to FINAL_list_of_files.dat
+
+    cluster_path_data_ids: dict
+        OUTER KEY = path to CLUSTERS.txt
+        INNER KEY = cluster number
+        VALUE = list of data ids (crystals)
+
+    Returns
+    -------
+    dict:
+        KEY = cluster path
+        VALUE = a list of all the paths associated with the data_ids (crystals) for desired clusters
+    '''
+    list_of_optimal_paths = []
+    cluster_final_path = {}
+    for cluster_path in cluster_path_data_ids:
+        for cluster in cluster_path_data_ids[cluster_path]:
+            final_path = os.path.dirname(cluster_path) + '/FINAL_list_of_files.dat'
+            data_ids = cluster_path_data_ids[cluster_path][cluster]
+            with open(final_path, 'r') as f:
+                for line in f:
+                    serial_number = int(line.split()[1])
+                    if serial_number in data_ids:
+                        list_of_optimal_paths.append(line.split()[0])
+            cluster_final_path[cluster_path] = list_of_optimal_paths
+            list_of_optimal_paths = []
+    return cluster_final_path
 
 
 def write_new_final_list_to_file(cluster_final_paths):
-	for optimal_path in cluster_final_paths:
-		now = datetime.now()
-		current_time = now.strftime("%H_%M_%S")
-		root_path = os.path.dirname(optimal_path) 
-		final_directory = root_path + '/new_final_list_' + current_time
-		if not os.path.exists(final_directory):
-			os.mkdir(final_directory)
-			os.chdir(final_directory)
-		with open('original.dat', 'w') as file:
-			print("Writing to {}/original.dat".format(os.getcwd()))
-			for final_path in cluster_final_paths[optimal_path]:
-				file.write("{}\n".format(final_path))
-			print("Finished writing to {}/original.dat\n".format(os.getcwd()))
+    '''
+    This function writes the paths to the optimal paths
+    in a new directory: root_path/new_final_list_hour_minute_second
+    '''
+    for optimal_path in cluster_final_paths:
+        now = datetime.now()
+        current_time = now.strftime("%H_%M_%S")
+        root_path = os.path.dirname(optimal_path) 
+        final_directory = root_path + '/new_final_list_' + current_time
+        if not os.path.exists(final_directory):
+            os.mkdir(final_directory)
+            os.chdir(final_directory)
+        with open('original.dat', 'w') as file:
+            print("Writing to {}/original.dat".format(os.getcwd()))
+            for final_path in cluster_final_paths[optimal_path]:
+                file.write("{}\n".format(final_path))
+            print("Finished writing to {}/original.dat\n".format(os.getcwd()))
 
-    
+
 def main():
-	args = add_parser()
-	clusters = args.clusters
+    args = add_parser()
+    clusters = args.clusters
 
-	root_path = os.getcwd()
-	cluster_files = 'CLUSTERS.txt'
-	promising_clusters = 'PROMISING_CLUSTERS.txt'
-	final_list_of_data = 'FINAL_list_of_files.dat' 
+    root_path = os.getcwd()
+    cluster_files = 'CLUSTERS.txt'
+    promising_clusters = 'PROMISING_CLUSTERS.txt'
+    final_list_of_data = 'FINAL_list_of_files.dat' 
 
-	cluster_paths = find_files(root_path, cluster_files)
-	promising_clusters_paths = find_files(root_path, promising_clusters)
-	final_list_paths = find_files(root_path, final_list_of_data)
+    cluster_paths = find_files(root_path, cluster_files)
+    promising_clusters_paths = find_files(root_path, promising_clusters)
+    final_list_paths = find_files(root_path, final_list_of_data)
 
-	
-	if args.clusters:
-		cluster_path_data_ids = get_cluster_information(cluster_paths, args.clusters)
-		cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
-		write_new_final_list_to_file(cluster_final_paths)
-	else:
-		cluster_path_data_ids = get_cluster_information(promising_clusters_paths)
-		cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
-		write_new_final_list_to_file(cluster_final_paths)
+
+    if args.clusters:
+        cluster_path_data_ids = get_cluster_information(cluster_paths, args.clusters)
+        cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
+        write_new_final_list_to_file(cluster_final_paths)
+    else:
+        cluster_path_data_ids = get_cluster_information(promising_clusters_paths)
+        cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
+        write_new_final_list_to_file(cluster_final_paths)
 
 
 if __name__ == '__main__':
-	main()
+    main()

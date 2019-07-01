@@ -117,10 +117,10 @@ def read_header(cluster_paths):
     header = []
     for cluster_path in cluster_paths:
         f = open(cluster_path, 'r').readlines()
-            header.append(f[0])
-            header.append(f[1])
-            header.append(f[2])
-            break
+        header.append(f[0])
+        header.append(f[1])
+        header.append(f[2])
+        break
     return header
 
 
@@ -190,7 +190,7 @@ def read_clusters_file(cluster_paths, mini, maxi, lengths, tallest_heights, data
     cluster_path_heights = {}
 
     for cluster_path in cluster_paths:
-            with open(cluster_path, 'r') as f:
+        with open(cluster_path, 'r') as f:
             lines = f.readlines()
             for line in lines:
                 t_line = " ".join(line.split())
@@ -275,7 +275,6 @@ def write_good_clusters_to_file(header, all_good_clusters):
     all_good_clusters: dict
         all_good_clusters["/path/to/CLUSTERS.txt"] = list of complete lines of clusters that met the conditions
     '''
-    all_good_clusters: dict
     for cluster_path in all_good_clusters:
         os.chdir(os.path.dirname(cluster_path))
         print(os.getcwd())
@@ -288,7 +287,7 @@ def write_good_clusters_to_file(header, all_good_clusters):
             for cluster_line in all_cluster_lines:
                 print("CLUSTER_LINE={}".format(cluster_line))
                 file.write(cluster_line + '\n')	
-        file.write('\n')
+            file.write('\n')
         print("Finished writing to {}/PROMISING_CLUSTERS.txt\n".format(os.getcwd()))
         print("{}\n".format(81*'='))
 
