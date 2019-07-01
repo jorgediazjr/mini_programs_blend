@@ -129,28 +129,67 @@ def read_clusters_file(cluster_paths, mini, maxi, lengths, tallest_heights, data
     This is the main function of this program.
     We extract the lines in the CLUSTERS.txt
 
+    Either minimum and maximum number of datasets,
+    or low and tall height of clusters.
+
     We also save a dictionary, where the KEY is
-    the base_path and the VALUE is a dictionary
+    the path to CLUSTERS.txt and the VALUE is a dictionary
     of cluster number with datasets that compose
     that cluster
+
+    Parameters
+    ----------
+    cluster_paths: list
+        list of paths to CLUSTERS.txt
+
+    mini: int
+        could either represent minimum number of datasets or low height of cluster
+
+    maxi: int
+        could either represent maximum number of datasets or tall height of cluster
+
+    lengths: dict
+        the KEY is path to CLUSTERS.txt and
+        VALUE is the number of total clusters per file
+
+    tallest_heights: dict
+        the KEY is path to CLUSTERS.txt and
+        VALUE is the number of tallest height per file
+
+    dataset: boolean, optional
+        if user wants to use minimum and maximum for datasets,
+        then this option must be true
+
+    Returns
+    -------
+    all_good_clusters: dict
+        all_good_clusters["/path/to/CLUSTERS.txt"] = list of complete lines of clusters that met the conditions
+
+    cluster_path_data_sets: dict
+        cluster_path_data_sets["/path/to/CLUSTERS.txt"][cluster_number] = dataset_ids
+        e.g. cluster_path_data_sets["/home/jdiaz/test/CLUSTERS.txt"][7] = [1, 2, 3, 7, 9, 11]
+
+    cluster_path_heights: dict
+        cluster_path_heights["/path/to/CLUSTERS.txt"][cluster_number] = height_of_clusters
+        e.g. cluster_path_data_sets["/home/jdiaz/test/CLUSTERS.txt"][7] = [0.1, 0.2, 0.3, 0.7, 0.9, 0.11]
+        
     '''
     # this dictionary will store the cluster number as KEY 
     # and the datasets that compose that cluster # as VALUE
     cluster_datasets = {}
 
+    # this dict has KEY=cluster | VALUE=height
     cl_ht = {}
 
     temp_line = []
-    num_of_clusters = 0
     temp_height = []
-
-    base_file = ""
+    num_of_clusters = 0
 
     all_good_clusters = {}
     cluster_path_data_sets = {}
     cluster_path_heights = {}
+
     for cluster_path in cluster_paths:
-        base = '_'.join(cluster_path.split('/')[-1:])
             with open(cluster_path, 'r') as f:
             lines = f.readlines()
             for line in lines:
@@ -221,11 +260,22 @@ def read_clusters_file(cluster_paths, mini, maxi, lengths, tallest_heights, data
         cluster_datasets = {}
         cl_ht = {}
         temp_line = []
-    base_file = base
-    return all_good_clusters, cluster_path_data_sets, cluster_path_heights, base_file
+    return all_good_clusters, cluster_path_data_sets, cluster_path_heights
 
 
-def write_good_clusters_to_file(header, all_good_clusters, cluster_paths):
+def write_good_clusters_to_file(header, all_good_clusters):
+    '''
+    this function writes all good clusters to a file PROMISING_CLUSTERS.txt
+
+    Parameters
+    ----------
+    header: list
+        the necessary header information for the clusters
+
+    all_good_clusters: dict
+        all_good_clusters["/path/to/CLUSTERS.txt"] = list of complete lines of clusters that met the conditions
+    '''
+    all_good_clusters: dict
     for cluster_path in all_good_clusters:
         os.chdir(os.path.dirname(cluster_path))
         print(os.getcwd())
@@ -243,7 +293,19 @@ def write_good_clusters_to_file(header, all_good_clusters, cluster_paths):
         print("{}\n".format(81*'='))
 
 
-def write_cluster_heights_to_file(base, cluster_path_heights, cluster_files):
+def write_cluster_heights_to_file(cluster_path_heights):
+    '''
+    this function's purpose is to write all clusters and heights to file
+    PROMISING_CLUSTERS_HEIGHTS.txt
+
+    Parameters
+    ----------
+    cluster_path_heights: dict
+        OUTER KEY is path to CLUSTERS.txt
+        INNER KEY is cluster number
+        VALUE     is height of cluster
+    '''
+
     for cluster_path in cluster_path_heights:
         os.chdir(os.path.dirname(cluster_path))
         print("Writing to {}/PROMISING_CLUSTERS_HEIGHTS.txt".format(os.getcwd()))
@@ -293,30 +355,30 @@ def main():
     header = read_header(cluster_files)
 
     if dataset:
-        all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, mini, maxi, lengths, tallest_heights, dataset)
+        all_good_clusters, cluster_path_data_sets, cluster_path_heights = read_clusters_file(cluster_files, mini, maxi, lengths, tallest_heights, dataset)
         for cluster_path in cluster_path_heights:
             collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-        write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-        write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+        write_good_clusters_to_file(header, all_good_clusters)
+        write_cluster_heights_to_file(cluster_path_heights)
     elif short and tall:
-        all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
+        all_good_clusters, cluster_path_data_sets, cluster_path_heights = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
         for cluster_path in cluster_path_heights:
             collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-        write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-        write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+        write_good_clusters_to_file(header, all_good_clusters)
+        write_cluster_heights_to_file(cluster_path_heights)
     elif short and not tall:
-        all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
+        all_good_clusters, cluster_path_data_sets, cluster_path_heights = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
         for cluster_path in cluster_path_heights:
             collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-        write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-        write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+        write_good_clusters_to_file(header, all_good_clusters)
+        write_cluster_heights_to_file(cluster_path_heights)
     elif not short and tall:
         short = 0
-        all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
+        all_good_clusters, cluster_path_data_sets, cluster_path_heights = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
         for cluster_path in cluster_path_heights:
             collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-        write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-        write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+        write_good_clusters_to_file(header, all_good_clusters)
+        write_cluster_heights_to_file(cluster_path_heights)
     elif mini and maxi and not dataset:
         print("Be sure to also enter the -d option in order to process with number of data sets. Your input was -m {} -x {}".format(mini, maxi))
     elif not short and not tall:
