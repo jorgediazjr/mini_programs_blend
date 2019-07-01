@@ -14,7 +14,7 @@ def find_files(path, pattern):
 
 
 def add_parser():
-	parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser("This program finds the path of every crystal in clusters. These clusters can either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding the paths the program write each path to a new file inside a new directory. The user can then run blend analysis mode and analyze the results.")
 	parser.add_argument('-c', '--clusters', help='enter the cluster(s) you want information on',
 			    type=int, nargs='+')
 	args = parser.parse_args()
@@ -49,7 +49,6 @@ def get_optimal_data_paths(final_list_paths, cluster_path_data_ids):
 	cluster_final_path = {}
 	for cluster_path in cluster_path_data_ids:
 		for cluster in cluster_path_data_ids[cluster_path]:
-			print("CLUSTER[{}]={}".format(cluster, cluster_path_data_ids[cluster_path][cluster]))
 			final_path = os.path.dirname(cluster_path) + '/FINAL_list_of_files.dat'
 			data_ids = cluster_path_data_ids[cluster_path][cluster]
 			with open(final_path, 'r') as f:
@@ -72,9 +71,10 @@ def write_new_final_list_to_file(cluster_final_paths):
 			os.mkdir(final_directory)
 			os.chdir(final_directory)
 		with open('original.dat', 'w') as file:
+			print("Writing to {}/original.dat".format(os.getcwd()))
 			for final_path in cluster_final_paths[optimal_path]:
-				#print("CWD={}\nROOT={}\nFINAL={}\n".format(os.getcwd(), optimal_path, final_path))
 				file.write("{}\n".format(final_path))
+			print("Finished writing to {}/original.dat\n".format(os.getcwd()))
 
     
 def main():
@@ -87,21 +87,16 @@ def main():
 	final_list_of_data = 'FINAL_list_of_files.dat' 
 
 	cluster_paths = find_files(root_path, cluster_files)
-	promising_clusters_paths = find_files(root_path,promising_clusters)
+	promising_clusters_paths = find_files(root_path, promising_clusters)
 	final_list_paths = find_files(root_path, final_list_of_data)
 
-	print("Main clusters path = {}".format(cluster_paths))
-	print("Promising clusters path = {}".format(promising_clusters_paths))
-	print("Final list path = {}".format(final_list_paths))
 	
 	if args.clusters:
 		cluster_path_data_ids = get_cluster_information(cluster_paths, args.clusters)
-		print(cluster_path_data_ids)
 		cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
 		write_new_final_list_to_file(cluster_final_paths)
 	else:
 		cluster_path_data_ids = get_cluster_information(promising_clusters_paths)
-		print(cluster_path_data_ids)
 		cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
 		write_new_final_list_to_file(cluster_final_paths)
 

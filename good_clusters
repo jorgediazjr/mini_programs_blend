@@ -129,14 +129,28 @@ def read_clusters_file(cluster_paths, mini, maxi, lengths, tallest_heights, data
 					try:
 						if type(int(t_line.split()[0])) == type(0):
 							if dataset:
-								cluster = int(float(t_line.split()[0]+'.'))
-								num_of_datasets = int(t_line.split()[1])
-								if num_of_datasets >= mini and num_of_datasets <= maxi:
-									datasets = list(map(int, t_line.split()[7:]))
-									cluster_datasets[cluster] = datasets
-									height_of_cluster = float(t_line.split()[2])
-									cl_ht[cluster] = height_of_cluster
-									temp_line.append(line)
+								if mini and maxi:
+									cluster = int(float(t_line.split()[0]+'.'))
+									num_of_datasets = int(t_line.split()[1])
+									if num_of_datasets >= mini and num_of_datasets <= maxi:
+										datasets = list(map(int, t_line.split()[7:]))
+										cluster_datasets[cluster] = datasets
+										height_of_cluster = float(t_line.split()[2])
+										cl_ht[cluster] = height_of_cluster
+										temp_line.append(line)
+								elif mini and not maxi:
+									cluster = int(float(t_line.split()[0]+'.'))
+									num_of_datasets = int(t_line.split()[1])
+									length = lengths[cluster_path]
+									print(length)
+									exit()
+									if num_of_datasets >= mini and num_of_datasets <= maxi:
+										datasets = list(map(int, t_line.split()[7:]))
+										cluster_datasets[cluster] = datasets
+										height_of_cluster = float(t_line.split()[2])
+										cl_ht[cluster] = height_of_cluster
+										temp_line.append(line)
+									
 							else:
 								height_of_cluster = float(t_line.split()[2])
 								tallest_height = tallest_heights[cluster_path]
@@ -236,41 +250,40 @@ def main():
     cluster_files.sort()
 
     lengths = file_lens(cluster_files)
+    print("lengths = {}".format(lengths))
     tallest_heights = get_tallest_heights(lengths)
-    print(tallest_heights)
 
     header = read_header(cluster_files)
 
     if dataset:
-            all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, mini, maxi, lengths, tallest_heights, dataset)
-	    for cluster_path in cluster_path_heights:
-                collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-            write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-            write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+		all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, mini, maxi, lengths, tallest_heights, dataset)
+		for cluster_path in cluster_path_heights:
+			collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
+		write_good_clusters_to_file(header, all_good_clusters, cluster_files)
+		write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
     elif short and tall:
-            all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
-	    for cluster_path in cluster_path_heights:
-                collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-            write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-            write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+		all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
+		for cluster_path in cluster_path_heights:
+			collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
+		write_good_clusters_to_file(header, all_good_clusters, cluster_files)
+		write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
     elif short and not tall:
-	    print(lengths)
-            all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
-	    for cluster_path in cluster_path_heights:
-                collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-            write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-            write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+        all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
+        for cluster_path in cluster_path_heights:
+			collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
+        write_good_clusters_to_file(header, all_good_clusters, cluster_files)
+        write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
     elif not short and tall:
-            short = 0
-            all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
-	    for cluster_path in cluster_path_heights:
-                collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
-            write_good_clusters_to_file(header, all_good_clusters, cluster_files)
-            write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
+        short = 0
+        all_good_clusters, cluster_path_data_sets, cluster_path_heights, base = read_clusters_file(cluster_files, short, tall, lengths, tallest_heights)
+        for cluster_path in cluster_path_heights:
+            collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
+        write_good_clusters_to_file(header, all_good_clusters, cluster_files)
+        write_cluster_heights_to_file(base, cluster_path_heights, cluster_files)
     elif mini and maxi and not dataset:
 	    print("Be sure to also enter the -d option in order to process with number of data sets. Your input was -m {} -x {}".format(mini, maxi))
     elif not short and not tall:
-            print("Need positional arguments. For more help do: good_clusters -h")
+        print("Need positional arguments. For more help do: good_clusters -h")
 
 if __name__ == '__main__':
     main()
