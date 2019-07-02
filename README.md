@@ -6,13 +6,13 @@ and/or `blend -s tallest_height [smallest_height]`.
 
 These additionals programs will only work if you have atleast executed blend in analysis mode.
 
-## good_clusters program
+## good_clusters_blend program
 
 Sometimes, a long list of data makes it hard for the user to quickly analyze results.
 This program's purpose is meant to facilitate the extraction and analysis of certain
 range of clusters or heights of clusters.
 
-### How does good_clusters work?
+### How does good_clusters_blend work?
 
 FILES NEEDED:
 1. CLUSTERS.txt
@@ -20,7 +20,7 @@ FILES NEEDED:
 
 PROGRAM OPTIONS:
 ```
-usage: good_clusters [-h] [-d] [-m MINIMUM] [-x MAXIMUM] [-s SHORT] [-t TALL]
+usage: good_clusters_blend [-h] [-d] [-m MINIMUM] [-x MAXIMUM] [-s SHORT] [-t TALL]
 
 This program accepts short and tall heights of cluster(s),
 OR it accepts minimum and maximum number of datasets
@@ -33,11 +33,11 @@ optional arguments:
   -d, --dataset         If this is entered then minimum and maximum are used
   -m MINIMUM, --minimum MINIMUM
                         enter the minimum number of datasets you want per
-                        cluster, e.g: good_clusters -m 3 will result in all
+                        cluster, e.g: good_clusters_blend -m 3 will result in all
                         clusters with a minimum of 3 datasets
   -x MAXIMUM, --maximum MAXIMUM
                         enter the maximum number of datasets you want per
-                        cluster, e.g: good_clusters -x 7 will result in all
+                        cluster, e.g: good_clusters_blend -x 7 will result in all
                         clusters with a maximum of 7 datasets
   -s SHORT, --short SHORT
                         enter short height to use with blend synthesis
@@ -84,14 +84,14 @@ dataset ids from CLUSTERS.txt. Afterwards, this program looks in
 BLEND_SUMMARY.txt to extract information on crystal: a, b, c, alpha, beta,
 gamma. If MERGING_STATISTICS.info exists, then it will also be able to find
 the completeness and redundancy of the cluster. NOTE: If the --read option is
-used, you must use the good_clusters program beforehand, in order to produce
+used, you must use the good_clusters_blend program beforehand, in order to produce
 the PROMISING_CLUSTERS.txt file, otherwise it will not work.
 
 optional arguments:
   -h, --help            show this help message and exit
   -r, --read            if this option is selected, then program looks for
                         PROMISING_CLUSTERS.txt which is produced from
-                        good_clusters program
+                        good_clusters_blend program
   -c CLUSTERS [CLUSTERS ...], --clusters CLUSTERS [CLUSTERS ...]
                         enter the cluster(s) you want information on
   -m MINIMUM, --minimum MINIMUM
@@ -109,7 +109,7 @@ FILES PRODUCED:
 
 Program extracts full paths for each data id (crystal) that are in the clusters:
 either these clusters are user specified and search for in `CLUSTERS.txt` or
-if user has executed `good_clusters` then the file `PROMISING_CLUSTERS.txt` can
+if user has executed `good_clusters_blend` then the file `PROMISING_CLUSTERS.txt` can
 be used for this program. 
 
 Another addition that is being worked on is to use information produced from
@@ -125,7 +125,7 @@ Another addition that is being worked on is to use information produced from
         - this information has all the paths that were used for the intial run
         of `blend -a original.dat`
     - PROMISING_CLUSTERS.txt
-        - file produced from running `good_clusters`
+        - file produced from running `good_clusters_blend`
         - a subset of `CLUSTERS.txt`
         - contains specific clusters
     - RANDOM_CLUSTERS.txt
