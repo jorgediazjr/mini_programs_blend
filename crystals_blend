@@ -16,7 +16,7 @@ BLEND_SUMMARY.txt & CLUSTERS.txt
 which are produced after running blend
 '''
 
-import argparse, fnmatch, os
+import argparse, fnmatch, os, subprocess
 
 
 def lattice_to_spacegroup(lattice):
@@ -105,9 +105,8 @@ def file_lens(paths):
         KEY = path to CLUSTERS.txt
         VALUE = number of clusters
     '''
-    def file_lens(files):
     lens = {}
-    for file in files:
+    for file in paths:
         p = subprocess.Popen(['wc', '-l', file],
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
@@ -495,18 +494,18 @@ def write_cluster_crystal_info_file(cluster_path_crystal):
 
 def main():
     args = add_parser()
-    minimum = None
-    maximum = None
-    clusters = None
+    minimum = args.minimum
+    maximum = args.minimum
+    clusters = args.clusters
 
     root = os.getcwd()
 
     blend_summary = "BLEND_SUMMARY.txt"
-    clusters = "CLUSTERS.txt"
+    cluster_file = "CLUSTERS.txt"
     merging_file = 'MERGING_STATISTICS.info'
 
     blend_paths = find_files(root, blend_summary)
-    cluster_paths = find_files(root, clusters)
+    cluster_paths = find_files(root, cluster_file)
     merging_paths = find_files(root + '/merged_files', merging_file)
 
     if not blend_paths:

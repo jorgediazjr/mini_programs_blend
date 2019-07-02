@@ -16,6 +16,7 @@ June 21, 2019
 
 import os, fnmatch, collections, argparse
 from math import ceil
+import subprocess
 
 def find_files(path, pattern):
     '''
@@ -61,7 +62,7 @@ def file_lens(cluster_paths):
         the VALUES are the total number of clusters
     '''
     lens = {}
-    for file in files:
+    for file in cluster_paths:
         p = subprocess.Popen(['wc', '-l', file],
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
@@ -281,7 +282,7 @@ def write_good_clusters_to_file(header, all_good_clusters):
                 file.write('\n')
                 all_cluster_lines = all_good_clusters[cluster_path]
             for cluster_line in all_cluster_lines:
-                print("CLUSTER_LINE={}".format(cluster_line))
+                # print("CLUSTER_LINE={}".format(cluster_line))
                 file.write(cluster_line + '\n')	
             file.write('\n')
         print("Finished writing to {}/PROMISING_CLUSTERS.txt\n".format(os.getcwd()))
@@ -308,7 +309,7 @@ def write_cluster_heights_to_file(cluster_path_heights):
             file.write("# {}\n".format(cluster_path))
             file.write("# {:9s} {:7s}\n".format("Cluster", "Height"))
             for cluster in cluster_path_heights[cluster_path]:
-                print("CLUSTER = {} | VALUE = {}".format(cluster, cluster_path_heights[cluster_path][cluster]))
+                # print("CLUSTER = {} | VALUE = {}".format(cluster, cluster_path_heights[cluster_path][cluster]))
                 file.write("{:10s} {:6.3f}\n".format(str(cluster), cluster_path_heights[cluster_path][cluster]))
                 file.write("\n")
         print("Finished writing to {}/PROMISING_CLUSTERS_HEIGHTS.txt\n".format(os.getcwd()))
@@ -319,9 +320,9 @@ def add_parser():
     parser = argparse.ArgumentParser(description="The file CLUSTERS.txt which is produced from running blend -a, is the file necessary for this program to execute correctly. This program accepts short and tall height of cluster, or it accepts minimum and maximum number of datasets per cluster, for extraction of promising clusters.")
     parser.add_argument("-d", "--dataset", help="If this is entered then minimum and maximum are used",
                         action="store_true")
-    parser.add_argument("-m", "--minimum", help="enter the minimum number of datasets you want per cluster, e.g: good_clusters -m 3 will result in all clusters with a minimum of 3 datasets",
+    parser.add_argument("-m", "--minimum", help="enter the minimum number of datasets you want per cluster, e.g: good_clusters_blend -m 3 will result in all clusters with a minimum of 3 datasets",
                         type=int)
-    parser.add_argument("-x", "--maximum", help="enter the maximum number of datasets you want per cluster, e.g: good_clusters -x 7 will result in all clusters with a maximum of 7 datasets",
+    parser.add_argument("-x", "--maximum", help="enter the maximum number of datasets you want per cluster, e.g: good_clusters_blend -x 7 will result in all clusters with a maximum of 7 datasets",
                         type=int)
     parser.add_argument("-s", "--short", help="enter short height to use with blend synthesis",
                         type=float)
@@ -344,12 +345,14 @@ def main():
     cluster_files.sort()
 
     lengths = file_lens(cluster_files)
-    print("lengths = {}".format(lengths))
     tallest_heights = get_tallest_heights(lengths)
 
     header = read_header(cluster_files)
 
     if dataset:
+        if not mini and not maxi:
+            print("ERROR: Be sure to add either -m for minimum and/or -x for maximum number of datasets.")
+            exit()
         all_good_clusters, cluster_path_data_sets, cluster_path_heights = read_clusters_file(cluster_files, mini, maxi, lengths, tallest_heights, dataset)
         for cluster_path in cluster_path_heights:
             collections.OrderedDict(sorted(cluster_path_heights[cluster_path].items()))
@@ -375,9 +378,9 @@ def main():
         write_good_clusters_to_file(header, all_good_clusters)
         write_cluster_heights_to_file(cluster_path_heights)
     elif mini and maxi and not dataset:
-        print("Be sure to also enter the -d option in order to process with number of data sets. Your input was -m {} -x {}".format(mini, maxi))
+        print("ERROR: Be sure to also enter the -d option in order to process with number of data sets. Your input was -m {} -x {}".format(mini, maxi))
     elif not short and not tall:
-        print("Need positional arguments. For more help do: good_clusters -h")
+        print("ERROR: Need positional arguments. For more help do: good_clusters_clusters -h")
 
 if __name__ == '__main__':
     main()

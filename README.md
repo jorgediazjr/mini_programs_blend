@@ -136,9 +136,11 @@ PROGRAM OPTIONS:
 usage: optimal_data_blend [-h] [-c CLUSTERS [CLUSTERS ...]] [-r]
 
 This program finds the path of every crystal in clusters. These clusters can
-either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding
-the paths the program write each path to a new file inside a new directory.
-The user can then run blend analysis mode and analyze the results.
+either be user input OR can be found in PROMISING_CLUSTERS.txt. If no
+arguments are fed into the program, then it will look for
+PROMISING_CLUSTERS.txt. After finding the paths the program write each path to
+a new file inside a new directory. The user can then run blend analysis mode
+and analyze the results.
 
 optional arguments:
   -h, --help            show this help message and exit
