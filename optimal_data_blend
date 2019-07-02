@@ -118,12 +118,41 @@ def get_optimal_data_paths(final_list_paths, cluster_path_data_ids):
     return cluster_final_path
 
 
-def get_optimal_data_paths_random(random_paths, final_paths):
-    random_path_data_ids = {}
+def get_dataids_random(random_paths):
+    data_sets = {} 
+    temp_sets = []
     for random_path in random_paths:
         with open(random_path, 'r') as file:
             for line in file:
-                print(line)
+                try:
+                    if type(int(float(line.split()[0]+'.'))) == type(0):
+                        data_ids = list(map(int, line.split()[7:]))
+                        temp_sets.extend(data_ids)
+                except:
+                    pass
+            temp_sets.sort()
+            data_sets[random_path] = temp_sets
+            temp_sets = []
+    return data_sets
+
+
+def get_optimal_data_paths_random(data_sets, final_paths):
+    cluster_dataids = {}
+    optimal_paths = []
+    for path in data_sets:
+        final_path = os.path.dirname(path) + '/FINAL_list_of_files.dat'
+        with open(final_path, 'r') as file:
+            data_ids = data_sets[path]
+            for line in file:
+                try:
+                    serial_number = int(line.split()[1])
+                    if serial_number in data_ids:
+                        optimal_paths.append(line.split()[0])
+                except:
+                    pass
+            cluster_dataids[final_path] = optimal_paths
+            optimal_paths = []
+    return cluster_dataids
 
 
 def write_new_final_list_to_file(cluster_final_paths):
@@ -155,17 +184,19 @@ def main():
     promising_clusters = 'PROMISING_CLUSTERS.txt'
     final_list_of_data = 'FINAL_list_of_files.dat' 
 
-    cluster_paths = find_files(root_path, cluster_files)
     final_list_paths = find_files(root_path, final_list_of_data)
 
 
     if args.clusters:
+        cluster_paths = find_files(root_path, cluster_files)
         cluster_path_data_ids = get_cluster_information(cluster_paths, args.clusters)
         cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
         write_new_final_list_to_file(cluster_final_paths)
     elif args.read:
         random_paths = find_files(root_path, 'RANDOM_CLUSTERS.txt')
-        cluster_final_paths = get_optimal_data_paths_random(random_paths, final_list_paths)
+        data_sets = get_dataids_random(random_paths)
+        random_final_paths = get_optimal_data_paths_random(data_sets, final_list_paths)
+        write_new_final_list_to_file(random_final_paths)
     else:
         promising_clusters_paths = find_files(root_path, promising_clusters)
         cluster_path_data_ids = get_cluster_information(promising_clusters_paths)

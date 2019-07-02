@@ -4,6 +4,19 @@ import os, fnmatch, collections, argparse, random
 import subprocess
 from random import sample
 
+
+def add_parser():
+    parser = argparse.ArgumentParser(description="Program accepts short and tall height of cluster for extraction of promising clusters")
+    parser.add_argument("-m", "--minimum", help="enter the minimum amount of datasets you want per cluster",
+                        type=int)
+    parser.add_argument("-x", "--maximum", help="enter the maximum number of datasets you want per cluster",
+                        type=int)
+    parser.add_argument("-r", "--random_clusters", help="number of random cluster user desires",
+                        type=int, default=15)
+    args = parser.parse_args()
+    return args
+
+
 def find_files(root_path, pattern):
     '''
     this function finds the locations
@@ -60,7 +73,7 @@ def read_header(files):
         header.append(f[1])
         header.append(f[2])
         break
-    return headers
+    return header
 
 
 def generate_random_cluster_sets(lengths, mini=10, maxi=12, num_of_clusters=20):
@@ -72,65 +85,83 @@ def generate_random_cluster_sets(lengths, mini=10, maxi=12, num_of_clusters=20):
     return random_clusters 
 
 
-def add_parser():
-    parser = argparse.ArgumentParser(description="Program accepts short and tall height of cluster for extraction of promising clusters")
-    parser.add_argument("-m", "--minimum", help="enter the minimum amount of datasets you want per cluster",
-                        type=int, default=10)
-    parser.add_argument("-x", "--maximum", help="enter the maximum number of datasets you want per cluster",
-                        type=int, default=16)
-    parser.add_argument("-r", "--random_clusters", help="number of random cluster user desires",
-                        type=int, default=10)
-    args = parser.parse_args()
-    return args
-
-
-def write_random_clusters_to_file(random_clusters):
-    header = "Cluster DatasetIDs"
-    with open("RANDOM_CLUSTERS.txt", 'w') as file:
-        file.write("{}\n".format(header))
-        for cluster in random_clusters:
-            file.write("{}\t{}\n".format(cluster, ' '.join(list(map(str, random_clusters[cluster])))))
-
-
-home_path = os.getcwd()
-cluster_files = find_files(home_path, 'CLUSTERS.txt')
-cluster_files.sort()
-
-args = add_parser()
-mini = args.minimum
-maxi = args.maximum
-num_clusters = args.random_clusters
-lengths = file_lens(cluster_files)
-
-# old version
-# random_clusters = generate_random_cluster_sets(len, mini, maxi, num_clusters)
-
-def get_random_clusters(lengths, num_of_clusters, cluster_files):
+def get_random_clusters(lengths, num_of_clusters, cluster_files, mini, maxi):
+    print("MINI={}\nMAXI={}".format(mini, maxi))
     path_cluster = {}
     temp_clusters = []
     for cluster_file in cluster_files:
-        print(lengths)
         rng = [i for i in range(1, lengths[cluster_file] + 1)]
-        print(rng)
-        exit()
-        rand_sample = sample(rng, num_clusters)
         print("Rand sample = {}\nType = {}".format(rand_sample, type(rand_sample)))
         os.chdir(os.path.dirname(cluster_file))
         with open(cluster_file, 'r') as f:
-            for line in f:
-                try:
-                    if type(int(float(line.split()[0]+'.'))) == type(0):
-                        cluster = int(float(line.split()[0]+'.'))
-                        if cluster in rand_sample:
-                            temp_clusters.append(line)
-                except:
-                    pass
+            lines = f.readlines()
+            last = lines[-1]
+            for line in lines:
+                rand_sample = sample(rng, num_clusters)
+                while len(temp_clusters) < len(rand_sample):
+                    if line is last:
+                        f.seek(0)
+
+                    try:
+                        if type(int(float(line.split()[0]+'.'))) == type(0):
+                            if mini and maxi:
+                                cluster = int(float(line.split()[0]+'.'))
+                                number_of_datasets = int(line.split()[1])
+                                if cluster in rand_sample:
+                                    if number_of_datasets >= mini and number_of_datasets <= maxi:
+                                        temp_clusters.append(line)
+                            elif mini and not maxi:
+                                maxi = lengths[cluster_file]
+                                cluster = int(float(line.split()[0]+'.'))
+                                number_of_datasets = int(line.split()[1])
+                                if cluster in rand_sample:
+                                    if number_of_datasets >= mini and number_of_datasets <= maxi:
+                                        temp_clusters.append(line)
+                            elif not mini and maxi:
+                                mini = 1
+                                cluster = int(float(line.split()[0]+'.'))
+                                number_of_datasets = int(line.split()[1])
+                                if cluster in rand_sample:
+                                    if number_of_datasets >= mini and number_of_datasets <= maxi:
+                                        temp_clusters.append(line)
+                            else:
+                                cluster = int(float(line.split()[0]+'.'))
+                                if cluster in rand_sample:
+                                    temp_clusters.append(line)
+                    except:
+                        pass
         path_cluster[cluster_file] = temp_clusters
         temp_clusters = []
     return path_cluster
 
 
-# new version
-random_clusters = get_random_clusters(lengths, num_clusters, cluster_files)
-print(random_clusters)
-# write_random_clusters_to_file(random_clusters)
+def write_random_clusters_to_file(path_clusters, header):
+    for path in path_clusters:
+        os.chdir(os.path.dirname(path))
+        with open("RANDOM_CLUSTERS.txt", 'w') as file:
+            for line in header:
+                file.write("{}\n".format(line))
+            for cluster in path_clusters[path]:
+                file.write("{}\n".format(cluster))
+
+
+def main():
+    args = add_parser()
+    mini = args.minimum
+    maxi = args.maximum
+    num_clusters = args.random_clusters
+
+    home_path = os.getcwd()
+    cluster_files = find_files(home_path, 'CLUSTERS.txt')
+    cluster_files.sort()
+
+    lengths = file_lens(cluster_files)
+
+    header = read_header(cluster_files)
+    # new version
+    random_clusters = get_random_clusters(lengths, num_clusters, cluster_files, mini, maxi)
+    write_random_clusters_to_file(random_clusters, header)
+
+
+if __name__ == '__main__':
+    main()

@@ -16,7 +16,7 @@ range of clusters or heights of clusters.
 
 FILES NEEDED:
 1. CLUSTERS.txt
-	- file is produced after executing the following: `blend -a original.dat` 
+    - file is produced after executing the following: `blend -a original.dat` 
 
 PROGRAM OPTIONS:
 ```
@@ -46,13 +46,13 @@ optional arguments:
 
 FILES PRODUCED:
 1. PROMISING_CLUSTERS.txt
-	- list of all clusters that are either between a minimum and maximum number of datasets
-	OR, list of all clusters that are between a short cluster height or tall cluster height
-	- see options above for more information
+    - list of all clusters that are either between a minimum and maximum number of datasets
+    OR, list of all clusters that are between a short cluster height or tall cluster height
+    - see options above for more information
 
 2. PROMISING_CLUSTERS_HEIGHTS.txt
-	- this file has two columns, column 1 contains all the clusters that were extracted and
-	found in PROMISING_CLUSTERS.txt. Column 2 contains the heights of each associated cluster
+    - this file has two columns, column 1 contains all the clusters that were extracted and
+    found in PROMISING_CLUSTERS.txt. Column 2 contains the heights of each associated cluster
 
 ## crystals_blend program
 
@@ -63,12 +63,12 @@ Cell information: crystal number, spacegroup number, a, b, c, alpha, beta, gamma
 ### How does crystals_blend work?
 
 1. FILES NEEDED:
-	- BLEND_SUMMARY.txt
-		- this is file that contains the crystal numbers with the cell information
-		- each crystal represents results from each data set processed
-		- clusters are made up of 2 or more crystals 
-	- CLUSTERS.txt
-		- this is the file that contains the clusters with the crystals that make up each of the clusters
+    - BLEND_SUMMARY.txt
+        - this is file that contains the crystal numbers with the cell information
+        - each crystal represents results from each data set processed
+        - clusters are made up of 2 or more crystals 
+    - CLUSTERS.txt
+        - this is the file that contains the clusters with the crystals that make up each of the clusters
 
 PROGRAM OPTIONS:
 ```
@@ -102,5 +102,17 @@ optional arguments:
 
 FILES PRODUCED:
 1. CLUSTER_CRYSTAL.info
-	- this file contains the cluster(s) with all the crystals
-	that make up the cluster(s) and cell information (as mentioned before)
+    - this file contains the cluster(s) with all the crystals
+    that make up the cluster(s) and cell information (as mentioned before)
+
+## optimal_data_blend
+
+Program extracts full paths for each data id (crystal) that are in the clusters:
+either these clusters are user specified and search for in `CLUSTERS.txt` or
+if user has executed `good_clusters` then the file `PROMISING_CLUSTERS.txt` can
+be used for this program. 
+
+Another addition that is being worked on is to use information produced from
+`random_clusters` which is not finished yet.
+
+### How does optimal_data_blend work?
