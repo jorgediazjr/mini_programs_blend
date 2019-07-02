@@ -206,3 +206,23 @@ FILES PRODUCED:
     - file with all paths relating to each data id (crystal) in clusters
     - a directory with the format `new_final_list_hour_minute_second` and
     file saved inside new directory for processing
+
+### How to use optimal_data_blend?
+
+#### Ex. 1: Using crystals_blend with --clusters
+
+1. Change into the directory where you ran `blend -a original.dat`.
+2. Make sure you have the file `CLUSTERS.txt`.
+3. If you do have the file from step 3, type `optimal_data_blend -c n1 n2 n3 n4 n5` where `n#` represents cluster number.
+4. Check your current working directory and you should have a new directory with the format `new_final_list_hour_minute_second`.
+5. The new directory contains the file `original.dat`.
+6. `original.dat` has the full paths to all crystals that were in user inputted clusters.
+
+#### Ex. 1: Using crystals_blend with --clusters
+
+1. Change into the directory where you ran `blend -a original.dat`.
+2. Make sure you have the file `CLUSTERS.txt`.
+3. If you do have the file from step 3, type `optimal_data_blend -c n1 n2 n3 n4 n5` where `n#` represents cluster number.
+4. Check your current working directory and you should have a new directory with the format `new_final_list_hour_minute_second`.
+5. The new directory contains the file `original.dat`.
+6. `original.dat` has the full paths to all crystals that were in user inputted clusters.
