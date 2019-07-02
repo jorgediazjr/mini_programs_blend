@@ -130,6 +130,32 @@ FILES PRODUCED:
 1. CLUSTER_CRYSTAL.info
     - this file contains the cluster(s) with all the crystals
     that make up the cluster(s) and cell information (as mentioned before)
+    
+### How to use crystals_blend?
+
+#### Ex. 1: Using crystals_blend with --read option
+
+1. Change into the directory where you ran `blend -a original.dat`.
+2. Make sure you have the file `PROMISING_CLUSTERS.txt` which is produced from running `good_clusters_blend`.
+3. If you do have the file from step 3, type `crystals_blend -r`.
+4. Check your current working directory and you should have files `CLUSTER_CRYSTAL.info`.
+5. `CLUSTER_CRYSTAL.info` will have cell information from the clusters in `PROMISING_CLUSTERS.txt`.
+
+#### Ex. 2: Using crystals_blend with --clusters option
+
+1. Change into the directory where you ran `blend -a original.dat`.
+2. Make sure you have the file `CLUSTERS.txt`.
+3. If you do have the file from step 3, type `crystals_blend -c n1 n2 n3 n4 n5` where `n#` represents a cluster number.
+4. Check your current working directory and you should have files `CLUSTER_CRYSTAL.info`.
+5. `CLUSTER_CRYSTAL.info` will have cell information on the clusters use entered.
+
+#### Ex. 3: Using crystals_blend with --minimum and --maximum option
+
+1. Change into the directory where you ran `blend -a original.dat`.
+2. Make sure you have the file `CLUSTERS.txt`.
+3. If you do have the file from step 3, type `crystals_blend -m 10 -x 20`.
+4. Check your current working directory and you should have files `CLUSTER_CRYSTAL.info`.
+5. `CLUSTER_CRYSTAL.info` will have cell information on all clusters in the interval `[--minimum, --maximum].
 
 ## optimal_data_blend
 
