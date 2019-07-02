@@ -56,28 +56,28 @@ FILES PRODUCED:
     - this file has two columns, column 1 contains all the clusters that were extracted and
     found in PROMISING_CLUSTERS.txt. Column 2 contains the heights of each associated cluster
 
-### How to use good_clusters?
+### How to use good_clusters_blend?
 
 #### Ex. 1: Using good_clusters for a minimum & maximum number of datasets
 
 1. Change into the directory where you ran `blend -a original.dat`.
 2. Make sure you have the file `CLUSTERS.txt`.
-3. If you do have the file from step 3, type `good_clusters -d -m 8 -x 16`
+3. If you do have the file from step 3, type `good_clusters_blend -d -m 8 -x 16`
 4. Check your current working directory and you should have files `PROMISING_CLUSTERS.txt` & `PROMISING_CLUSTERS_HEIGHTS.txt`.
 
 
-#### Ex. 2: Using good_clusters for a minimum number of datasets ONLY (csame will work with maximum)
+#### Ex. 2: Using good_clusters_blend for a minimum number of datasets ONLY (csame will work with maximum)
 
 1. Change into the directory where you ran `blend -a original.dat`.
 2. Make sure you have the file `CLUSTERS.txt`.
-3. If you do have the file from step 3, type `good_clusters -d -m 5`
+3. If you do have the file from step 3, type `good_clusters_blend -d -m 5`
 4. Check your current working directory and you should have files `PROMISING_CLUSTERS.txt` & `PROMISING_CLUSTERS_HEIGHTS.txt`.
 
-#### Ex. 3: Using good_clusters with range of height
+#### Ex. 3: Using good_clusters_blend with range of height
 
 1. Change into the directory where you ran `blend -a original.dat`.
 2. Make sure you have the file `CLUSTERS.txt`.
-3. If you do have the file from step 3, type `good_clusters -s 1.0 -t 2.5`
+3. If you do have the file from step 3, type `good_clusters_blend -s 1.0 -t 2.5`
 4. Check your current working directory and you should have files `PROMISING_CLUSTERS.txt` & `PROMISING_CLUSTERS_HEIGHTS.txt`.
 
 ## crystals_blend program
