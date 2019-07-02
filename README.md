@@ -117,19 +117,19 @@ Another addition that is being worked on is to use information produced from
 
 ### How does optimal_data_blend work?
 
-1. FILES NEEDED:
-    - CLUSTERS.txt
-        - file produced from running `blend` in analysis mode beforehand
-        - contains all necessary information of the clusters program will work with
-    - FINAL_list_of_files.dat
-        - this information has all the paths that were used for the intial run
-        of `blend -a original.dat`
-    - PROMISING_CLUSTERS.txt
-        - file produced from running `good_clusters_blend`
-        - a subset of `CLUSTERS.txt`
-        - contains specific clusters
-    - RANDOM_CLUSTERS.txt
-        - file produced from running `random_clusters` (still being worked on)
+FILES NEEDED:
+1. CLUSTERS.txt
+    - file produced from running `blend` in analysis mode beforehand
+    - contains all necessary information of the clusters program will work with
+2. FINAL_list_of_files.dat
+    - this information has all the paths that were used for the intial run
+    of `blend -a original.dat`
+3. PROMISING_CLUSTERS.txt
+    - file produced from running `good_clusters_blend`
+    - a subset of `CLUSTERS.txt`
+    - contains specific clusters
+4. RANDOM_CLUSTERS.txt
+    - file produced from running `random_clusters` (still being worked on)
 
 PROGRAM OPTIONS:
 ```
