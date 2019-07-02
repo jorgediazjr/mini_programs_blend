@@ -6,6 +6,8 @@ and/or `blend -s tallest_height [smallest_height]`.
 
 These additionals programs will only work if you have atleast executed blend in analysis mode.
 
+These are python executables so you can add `mini_programs_blend` to your `.bashrc` file.
+
 ## good_clusters_blend program
 
 Sometimes, a long list of data makes it hard for the user to quickly analyze results.
@@ -53,6 +55,15 @@ FILES PRODUCED:
 2. PROMISING_CLUSTERS_HEIGHTS.txt
     - this file has two columns, column 1 contains all the clusters that were extracted and
     found in PROMISING_CLUSTERS.txt. Column 2 contains the heights of each associated cluster
+
+### How to use good_clusters?
+
+#### Using good_clusters for a lower & upper limit on number of datasets
+
+1. Change into the directory where you ran `blend -a original.dat`.
+2. Make sure you have the file `CLUSTERS.txt`.
+3. If you do have the file from step 3, type `good_clusters -d -m 8 -x 16`
+
 
 ## crystals_blend program
 
