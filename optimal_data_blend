@@ -122,8 +122,8 @@ def get_optimal_data_paths_random(random_paths, final_paths):
     random_path_data_ids = {}
     for random_path in random_paths:
         with open(random_path, 'r') as file:
-            
-    pass
+            for line in file:
+                print(line)
 
 
 def write_new_final_list_to_file(cluster_final_paths):

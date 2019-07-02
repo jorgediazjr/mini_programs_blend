@@ -60,20 +60,16 @@ def file_lens(cluster_paths):
         the KEYS are paths to CLUSTERS.txt and
         the VALUES are the total number of clusters
     '''
-    files_len = {}
-    if len(cluster_paths) == 1:
-        with open(cluster_paths[0], 'r') as f:
-            for i, l in enumerate(f):
-                pass
-            files_len[cluster_paths[0]] = (i+1)-4
-        return files_len
-    else:
-        for cluster_path in cluster_paths:
-            with open(cluster_path, 'r') as f:
-                for i, l in enumerate(f):
-                    pass
-                files_len[cluster_path] = (i+1)-4
-        return files_len
+    lens = {}
+    for file in files:
+        p = subprocess.Popen(['wc', '-l', file],
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        result, error = p.communicate()
+        if p.returncode == 0:
+            num_of_clusters = int(result.strip().split()[0]) - 4
+            lens[file] = num_of_clusters
+    return lens
 
 
 def get_tallest_heights(lengths):
