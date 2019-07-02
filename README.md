@@ -116,3 +116,38 @@ Another addition that is being worked on is to use information produced from
 `random_clusters` which is not finished yet.
 
 ### How does optimal_data_blend work?
+
+1. FILES NEEDED:
+    - CLUSTERS.txt
+        - file produced from running `blend` in analysis mode beforehand
+        - contains all necessary information of the clusters program will work with
+    - FINAL_list_of_files.dat
+        - this information has all the paths that were used for the intial run
+        of `blend -a original.dat`
+    - PROMISING_CLUSTERS.txt
+        - file produced from running `good_clusters`
+        - a subset of `CLUSTERS.txt`
+        - contains specific clusters
+    - RANDOM_CLUSTERS.txt
+        - file produced from running `random_clusters` (still being worked on)
+
+PROGRAM OPTIONS:
+```
+usage: This program finds the path of every crystal in clusters. These clusters can
+either be user input OR can be found in CLUSTERS.txt, PROMISING_CLUSTERS.txt, or RANDOM_CLUSTERS.txt.
+After finding the paths the program write each path to a new file inside a new directory. The user can then
+run blend analysis mode and analyze the results.
+       [-h] [-c CLUSTERS [CLUSTERS ...]] [-r]
+
+       optional arguments:
+         -h, --help            show this help message and exit
+         -c CLUSTERS [CLUSTERS ...], --clusters CLUSTERS [CLUSTERS ...]
+                               enter the cluster(s) you want information on
+         -r, --read            this reads RANDOM_CLUSTERS.txt
+```
+
+FILES PRODUCED:
+1. original.dat
+    - file with all paths relating to each data id (crystal) in clusters
+    - a directory with the format `new_final_list_hour_minute_second` and
+    file saved inside new directory for processing
