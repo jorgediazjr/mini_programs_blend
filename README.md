@@ -62,13 +62,13 @@ Cell information: crystal number, spacegroup number, a, b, c, alpha, beta, gamma
 
 ### How does crystals_blend work?
 
-1. FILES NEEDED:
-    - BLEND_SUMMARY.txt
-        - this is file that contains the crystal numbers with the cell information
-        - each crystal represents results from each data set processed
-        - clusters are made up of 2 or more crystals 
-    - CLUSTERS.txt
-        - this is the file that contains the clusters with the crystals that make up each of the clusters
+FILES NEEDED:
+1. BLEND_SUMMARY.txt
+    - this is file that contains the crystal numbers with the cell information
+    - each crystal represents results from each data set processed
+    - clusters are made up of 2 or more crystals 
+2. CLUSTERS.txt
+    - this is the file that contains the clusters with the crystals that make up each of the clusters
 
 PROGRAM OPTIONS:
 ```
