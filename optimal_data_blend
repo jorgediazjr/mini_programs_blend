@@ -31,7 +31,7 @@ def find_files(path, pattern):
 
 
 def add_parser():
-    parser = argparse.ArgumentParser("This program finds the path of every crystal in clusters. These clusters can either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding the paths the program write each path to a new file inside a new directory. The user can then run blend analysis mode and analyze the results.")
+    parser = argparse.ArgumentParser(description="This program finds the path of every crystal in clusters.\nThese clusters can either be user input OR can be found in PROMISING_CLUSTERS.txt.\nAfter finding the paths the program write each path to a new file inside a new directory.\nThe user can then run blend analysis mode and analyze the results.")
     parser.add_argument('-c', '--clusters', help='enter the cluster(s) you want information on',
                         type=int, nargs='+')
     parser.add_argument('-r', '--read', help='this reads RANDOM_CLUSTERS.txt',

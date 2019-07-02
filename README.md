@@ -133,17 +133,18 @@ Another addition that is being worked on is to use information produced from
 
 PROGRAM OPTIONS:
 ```
-usage: This program finds the path of every crystal in clusters. These clusters can
-either be user input OR can be found in CLUSTERS.txt, PROMISING_CLUSTERS.txt, or RANDOM_CLUSTERS.txt.
-After finding the paths the program write each path to a new file inside a new directory. The user can then
-run blend analysis mode and analyze the results.
-       [-h] [-c CLUSTERS [CLUSTERS ...]] [-r]
+usage: optimal_data_blend [-h] [-c CLUSTERS [CLUSTERS ...]] [-r]
 
-       optional arguments:
-         -h, --help            show this help message and exit
-         -c CLUSTERS [CLUSTERS ...], --clusters CLUSTERS [CLUSTERS ...]
-                               enter the cluster(s) you want information on
-         -r, --read            this reads RANDOM_CLUSTERS.txt
+This program finds the path of every crystal in clusters. These clusters can
+either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding
+the paths the program write each path to a new file inside a new directory.
+The user can then run blend analysis mode and analyze the results.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CLUSTERS [CLUSTERS ...], --clusters CLUSTERS [CLUSTERS ...]
+                        enter the cluster(s) you want information on
+  -r, --read            this reads RANDOM_CLUSTERS.txt
 ```
 
 FILES PRODUCED:
