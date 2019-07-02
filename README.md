@@ -8,6 +8,9 @@ These additionals programs will only work if you have atleast executed blend in 
 
 These are python executables so you can add `mini_programs_blend` to your `.bashrc` file.
 
+#### Install
+```git clone https://github.com/jorgediazjr/mini_programs_blend```
+
 ## good_clusters_blend program
 
 Sometimes, a long list of data makes it hard for the user to quickly analyze results.
