@@ -218,7 +218,7 @@ FILES PRODUCED:
 5. The new directory contains the file `original.dat`.
 6. `original.dat` has the full paths to all crystals that were in user inputted clusters.
 
-#### Ex. 1: Using crystals_blend with --clusters
+#### Ex. 2: Using crystals_blend with --read
 
 1. Change into the directory where you ran `blend -a original.dat`.
 2. Make sure you have the file `CLUSTERS.txt`.
