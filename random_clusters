@@ -2,7 +2,7 @@
 
 import os, fnmatch, collections, argparse, random
 
-def find(pattern, path):
+def find_files(root_path, pattern):
     '''
     this function finds the locations
     of the files with the specified
@@ -18,21 +18,21 @@ def find(pattern, path):
     Returns
     -------
     list
-	list of paths to CLUSTERS.txt
+        list of paths to CLUSTERS.txt
     '''
-    file = []
-    for root, dirs, files in os.walk(path):
+    f = []
+    for root, dirs, files in os.walk(root_path):
         for name in files:
             if fnmatch.fnmatch(name, pattern):
-             	file.append(os.path.join(root, name))
-    return file
+                f.append(os.path.join(root, name))
+    return f
 
 
-def file_len(files):
+def file_lens(files):
     lens = {}
     for file in files:
         with open(file) as f:
-	    i = -1
+            i = -1
             for i, l in enumerate(f):
                 pass
         lens[file] = i
@@ -51,51 +51,51 @@ def read_header(files):
     '''
     headers = []
     for file in files:
-		f = open(file, 'r').readlines()
-        	headers.append(f[0])
-		headers.append(f[1])
-		headers.append(f[2])
-		break
+        f = open(file, 'r').readlines()
+        headers.append(f[0])
+        headers.append(f[1])
+        headers.append(f[2])
+        break
     return headers
 
 
-def generate_random_cluster_sets(len, min=10, max=12, num_of_clusters=10):
+def generate_random_cluster_sets(lengths, mini=10, maxi=12, num_of_clusters=20):
     random_clusters = {}
-    for key in len:
-	    num_lines = len[key]
-	    for i in range(num_of_clusters):
-		    random_clusters[i+1] = random.sample(range(1,num_lines), random.randint(min, max+1))
+    for path in lengths:
+        num_lines = lengths[path]
+        for i in range(num_of_clusters):
+            random_clusters[i+1] = random.sample(range(1,num_lines), random.randint(mini, maxi+1))
     return random_clusters 
 
 
 def add_parser():
-	parser = argparse.ArgumentParser(description="Program accepts short and tall height of cluster for extraction of promising clusters")
-	parser.add_argument("-m", "--min", help="enter the minimum amount of datasets you want per cluster",
-			    type=int, default=10)
-	parser.add_argument("-x", "--max", help="enter the maximum number of datasets you want per cluster",
-			    type=int, default=16)
-	parser.add_argument("-r", "--random_clusters", help="number of random cluster user desires",
-			    type=int, default=10)
-	args = parser.parse_args()
-	return args
+    parser = argparse.ArgumentParser(description="Program accepts short and tall height of cluster for extraction of promising clusters")
+    parser.add_argument("-m", "--minimum", help="enter the minimum amount of datasets you want per cluster",
+                        type=int, default=10)
+    parser.add_argument("-x", "--maximum", help="enter the maximum number of datasets you want per cluster",
+                        type=int, default=16)
+    parser.add_argument("-r", "--random_clusters", help="number of random cluster user desires",
+                        type=int, default=10)
+    args = parser.parse_args()
+    return args
 
 
 def write_random_clusters_to_file(random_clusters):
-	header = "Cluster DatasetIDs"
-	with open("RANDOM_CLUSTERS.txt", 'w') as file:
-		file.write("{}\n".format(header))
-		for cluster in random_clusters:
-			file.write("{}\t{}\n".format(cluster, ' '.join(list(map(str, random_clusters[cluster])))))
+    header = "Cluster DatasetIDs"
+    with open("RANDOM_CLUSTERS.txt", 'w') as file:
+        file.write("{}\n".format(header))
+        for cluster in random_clusters:
+            file.write("{}\t{}\n".format(cluster, ' '.join(list(map(str, random_clusters[cluster])))))
 
 home_path = os.getcwd()
-files = find('CLUSTERS.txt', home_path)
+files = find_files(home_path, 'CLUSTERS.txt')
 files.sort()
 
 args = add_parser()
-min = args.min
-max = args.max
+mini = args.minimum
+maxi = args.maximum
 num_clusters = args.random_clusters
-len = file_len(files)
+len = file_lens(files)
 
-random_clusters = generate_random_cluster_sets(len, min, max, num_clusters)
+random_clusters = generate_random_cluster_sets(len, mini, maxi, num_clusters)
 write_random_clusters_to_file(random_clusters)

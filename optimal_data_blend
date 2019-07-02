@@ -34,6 +34,8 @@ def add_parser():
     parser = argparse.ArgumentParser("This program finds the path of every crystal in clusters. These clusters can either be user input OR can be found in PROMISING_CLUSTERS.txt. After finding the paths the program write each path to a new file inside a new directory. The user can then run blend analysis mode and analyze the results.")
     parser.add_argument('-c', '--clusters', help='enter the cluster(s) you want information on',
                         type=int, nargs='+')
+    parser.add_argument('-r', '--read', help='this reads RANDOM_CLUSTERS.txt',
+                        action="store_true")
     args = parser.parse_args()
     return args
 
@@ -116,6 +118,14 @@ def get_optimal_data_paths(final_list_paths, cluster_path_data_ids):
     return cluster_final_path
 
 
+def get_optimal_data_paths_random(random_paths, final_paths):
+    random_path_data_ids = {}
+    for random_path in random_paths:
+        with open(random_path, 'r') as file:
+            
+    pass
+
+
 def write_new_final_list_to_file(cluster_final_paths):
     '''
     This function writes the paths to the optimal paths
@@ -146,7 +156,6 @@ def main():
     final_list_of_data = 'FINAL_list_of_files.dat' 
 
     cluster_paths = find_files(root_path, cluster_files)
-    promising_clusters_paths = find_files(root_path, promising_clusters)
     final_list_paths = find_files(root_path, final_list_of_data)
 
 
@@ -154,7 +163,11 @@ def main():
         cluster_path_data_ids = get_cluster_information(cluster_paths, args.clusters)
         cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
         write_new_final_list_to_file(cluster_final_paths)
+    elif args.read:
+        random_paths = find_files(root_path, 'RANDOM_CLUSTERS.txt')
+        cluster_final_paths = get_optimal_data_paths_random(random_paths, final_list_paths)
     else:
+        promising_clusters_paths = find_files(root_path, promising_clusters)
         cluster_path_data_ids = get_cluster_information(promising_clusters_paths)
         cluster_final_paths = get_optimal_data_paths(final_list_paths, cluster_path_data_ids)
         write_new_final_list_to_file(cluster_final_paths)
